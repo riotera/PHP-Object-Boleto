@@ -62,6 +62,9 @@ class BB extends Banco{
       */
     public function particularidade($object){
 		switch ($object->Vendedor->Carteira) {
+			case '18-6':
+				$object->Boleto->NossoNumero = $object->Data['CodigoCedente'] . Math::Mod11($object->Data['NossoNumero'], 0, 0, true);
+				break;
 			case '18-6-17':
 				$this->layoutCodigoBarras = ':Banco:Moeda:FatorVencimento:Valor:CodigoCedente:NossoNumero21';
 				break;
@@ -71,6 +74,7 @@ class BB extends Banco{
 				break;
 			case '18-8':
 				$this->layoutCodigoBarras = ':Banco:Moeda:FatorVencimento:Valor000000:CodigoCedente:NossoNumero:Carteira';
+				$object->Boleto->NossoNumero = $object->Data['CodigoCedente'] . Math::Mod11($object->Data['NossoNumero'], 0, 0, true);
 				break;
 		}
 		$object->Vendedor->Carteira = '18';
