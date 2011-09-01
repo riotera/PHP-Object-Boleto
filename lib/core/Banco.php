@@ -12,25 +12,25 @@ class Banco{
         Armazena o nome do banco
     */
     public $Nome;
-    
+
     /*
         @var array $image
         Armazena o nome da imagem da logomarca do banco
     */
     public $Image;
-    
+
     /*
         @var array $css
         Armazena o arquivo CSS utilizado por esse banco
     */
     public $Css;
-    
+
     /*
         @var array $object
         Armazena o objeto OB
     */
     public $parent;
-    
+
     /*
         @var array $relacoes
         Armazena a relação entre os mais diversos bancos e os nomes dos
@@ -55,12 +55,12 @@ class Banco{
         '623' => 'Panamericano',
         '756' => 'Bancoob',
     );
-    
-    
+
+
     /*
         @var array $tamanhos
         Armazena os dados de posições dos valores dentro do código de barras.
-        
+
     */
     public $tamanhos = array();
 
@@ -70,23 +70,23 @@ class Banco{
         dos campos entre elas.
     */
     public $carteiras = array();
-    
+
     /*
         @var $layoutCodigoBarras
         armazena o layout que será usado para gerar o código de barras desse banco
      */
     public $layoutCodigoBarras;
-    
+
     /*
         @var $formataLinhaDigitavel
         Máscara para a linha digitável
      */
     public $mascaraLinhaDigitavel = '00000.00000 00000.000000 00000.000000 0 00000000000000';
-    
-    
+
+
     /**
       * Construtor da classe
-      * 
+      *
       * @version 0.1 18/05/2011 Initial
       */
     public function __construct($object = null){
@@ -94,14 +94,14 @@ class Banco{
             $this->parent = $object;
         }
     }
-    
+
     /**
       * Carrega o arquivo e as configurações de layout do banco informado
-      * 
+      *
       * @version 0.1 20/05/2011 Initial
       */
     public function load($codigo, $object){
-        
+
 
         if(array_key_exists($codigo, $this->relacoes)){
             $banco = $this->relacoes[$codigo];
@@ -119,10 +119,10 @@ class Banco{
             throw new Exception('O banco ' . $codigo. ' não existe em Banco::$relacoes');
         }
     }
-    
+
     /**
       * Normaliza as variáveis de acordo com os seus tamanhos exatos
-      * 
+      *
       * @version 0.1 18/05/2011 Initial
       */
     public function normalize($valor, $variavel){
@@ -139,8 +139,8 @@ class Banco{
             throw new Exception(" A chave \"{$variavel}\" não existe no layout");
         }
     }
-    
-    
+
+
     /**
       * particularidade() Faz em tempo de execução mudanças que sejam imprescindíveis
       * para a geração correta do código de barras
@@ -150,9 +150,9 @@ class Banco{
       * @version 0.1 28/05/2011 Initial
       */
     public function particularidade($data){}
-    
-    
-    
+
+
+
     /**
       * Avalia se todos os campos necessários para a geração do código de barras
       * estão preenchidos
@@ -169,7 +169,7 @@ class Banco{
             }
         }/**/
     }
-    
+
     /**
       * Retorna as carteiras aceitas por esse boleto
       *
@@ -177,14 +177,9 @@ class Banco{
       */
     public function getCarteiras(){
         $buff = array();
-        
+
         foreach($this->carteiras as $key => $carteira){
-            if(is_array($carteira)){
-                $buff[] = $key;
-            }
-            else{
-                $buff[] = $carteira;
-            }
+            $buff[] = (is_array($carteira)) ? $key : $carteira;
         }
         return $buff;
     }
@@ -197,22 +192,21 @@ class Banco{
       *          0.2 31/05/2011 Se passar um nome de campo, ele retorna só aquele campo específico
       */
     public function getTamanhos($campo = null){
+		$carteira = $this->parent->Vendedor->Carteira;
+		if(array_key_exists($carteira, $this->carteiras)){
+            $this->tamanhos = array_merge($this->tamanhos,
+                               $this->carteiras[$carteira]);
+        }
+
         if(is_null($campo)){
-            $carteira = $this->parent->Vendedor->Carteira;
-            if(array_key_exists($carteira, $this->carteiras)){
-                return array_merge($this->tamanhos,
-                                   $this->carteiras[$carteira]);
-            }
-            else{
-                return $this->tamanhos;
-            }
+			return $this->tamanhos;
         }
         else{
-            $tamanhos = $this->getTamanhos();
-            if(array_key_exists($campo, $tamanhos)){
-                return $tamanhos[$campo];
+            if(array_key_exists($campo, $this->tamanhos)){
+                return $this->tamanhos[$campo];
             }
         }
+		return null;
     }
-    
+
 }
