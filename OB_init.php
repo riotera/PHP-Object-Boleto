@@ -1,6 +1,8 @@
 <?php
     define('OB_DIR', dirname(__FILE__));
-   
+	define('ROOT', '/' . basename(OB_DIR));
+	define('ASSETS_ROOT', ROOT . '/public');
+
     require OB_DIR . '/lib/utils/Debug.php';
 
     /*
@@ -13,7 +15,7 @@
     require OB_DIR . '/lib/core/Boleto.php';
     require OB_DIR . '/lib/core/Configuracao.php';
     require OB_DIR . '/lib/core/Template.php';
-    
+
     /*
         UTILS
      */
