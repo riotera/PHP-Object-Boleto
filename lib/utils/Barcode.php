@@ -3,7 +3,7 @@
     Class Barcode
     Essa classe tem o objetivo de fazer a geração de códigos de barra
     em imagem única
-    
+
     -----------------------------------------------
         COPYRIGHT
     -----------------------------------------------
@@ -15,35 +15,35 @@
     @package ObjectBoleto http://github.com/klawdyo/PHP-Object-Boleto
     @subpackage ObjectBoleto.Lib.Utils
     @license http://www.opensource.org/licenses/mit-license.php The MIT License
-    
+
     -----------------------------------------------
         HOW TO USE
     -----------------------------------------------
         //Inclua a class no arquivo
         require 'lib/utils/Barcode.php';
-        
+
         //Chame as funções normalmente
         Barcode::getImage('123455689') pega o resource da imagem gerada
         echo Barcode::getHtml('123455689') retorna o html para gerar a imagem
-        
+
     -----------------------------------------------
         CHANGELOG
     -----------------------------------------------
-    
+
     17/05/2011
-    [+] Initial 
-    
+    [+] Initial
+
     -----------------------------------------------
         TO DO
     -----------------------------------------------
-    
 
-    
+
+
     -----------------------------------------------
         KNOWN BUGS
     -----------------------------------------------
 
-    
+
  */
 class Barcode{
     //Imagem
@@ -66,11 +66,11 @@ class Barcode{
         //5       //6      //7      //8     //9
         '10100', '01100', '00011', '10010', '01010'
     );
-    
+
     private $current_x = 0;
     private $color = 0;
-    
-    
+
+
     /**
       *
       *
@@ -79,13 +79,13 @@ class Barcode{
     public function __construct(){
         header("Content-type:image/png");
         $this->image = imagecreate( $this->width, $this->height);
-        
+
         //Alocando cores
         $this->white = imagecolorallocate($this->image, 255, 255, 255);
         $this->black = imagecolorallocate($this->image, 0, 0, 0);
-        
+
     }
-    
+
     /**
       *
       *
@@ -95,7 +95,7 @@ class Barcode{
         $color = $color == 0 ? $this->black : $this->white;
         imagefilledrectangle($this->image, $x, 0, $x + $width, $this->height, $color);
     }
-    
+
     /**
       *
       *
@@ -105,10 +105,10 @@ class Barcode{
         //Chamando quem vai processar a imagem
         $this->process($code);
         //Exibindo a image
-        imagepng($this->image); 
+        imagepng($this->image);
         imagedestroy($this->image);
     }
-    
+
     /**
       *
       *
@@ -119,7 +119,7 @@ class Barcode{
         $this->color = 0;
         $this->image = null;
     }
-    
+
     /**
       *
       *
@@ -129,17 +129,17 @@ class Barcode{
         $barcode = new Barcode();
         $barcode->getBarcode($code);
     }
-    
+
     /**
       *
       *
       * @version 0.1 17/05/2011 Initial
       */
     public static function getHtml($code){
-        return '<img src="' . OB::url('barcode/' . $code) . '" />';
+        return '<img src="' . ROOT . '/barcode/' . $code . '" />';
         //return '<img src="' . OB::url('lib/utils/Barcode.php') . '?n=' . $code . '" />';
     }
-    
+
     /**
       *
       *
@@ -156,7 +156,7 @@ class Barcode{
 
         return $buff;
     }
-    
+
     /**
       *
       *
@@ -175,13 +175,13 @@ class Barcode{
             if($i == 0) $current = $this->start_code . $current;
             //Está no final? Adiciono o final
             if($i == ($n - 2)) $current .= $this->end_code;
-            
+
             //Transformando cada número os binários utilizados
             for($j = 0; $j < strlen($current); $j++){
                 //Se for 1, a largura é 3. Se for 0, a largura é 1
                 $width = substr($current, $j, 1) == 1 ? 3 : 1;
                 //pr($width);
-                
+
                 $this->addBar($this->current_x, $width, $this->color);
                 //Se a última cor for preta, mudo pra branca
                 $this->color = $this->color == 0 ? 1 : 0;
