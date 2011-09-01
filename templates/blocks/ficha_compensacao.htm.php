@@ -117,7 +117,7 @@
                     <div class="">
                          <label>Nosso número</label>
                          <?php
-                            echo $OB->Boleto->NossoNumero . '-' . Math::Mod11($OB->Boleto->NossoNumero)
+                            echo $OB->Boleto->NossoNumero;
                             ;
                             ?>
                     </div>
