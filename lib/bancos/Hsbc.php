@@ -10,32 +10,32 @@
     @package ObjectBoleto http://github.com/klawdyo/PHP-Object-Boleto
     @subpackage ObjectBoleto.Lib.Bancos
     @license http://www.opensource.org/licenses/mit-license.php The MIT License
-    
+
 -----------------------
     CHANGELOG
 -----------------------
     28/05/2011
     [+] Inicial
-    
-    
-    
+
+
+
   */
 class Hsbc extends Banco{
     public $Codigo = '399';
     public $Nome = 'Hsbc';
     //public $Css;
     public $Image = 'hsbc.png';
-    
+
     /*
         @var array $tamanhos
         Armazena os tamanhos dos campos na geração do código de barras
         e da linha digitável
-        
+
         1   5   10   15   20   25   30   35   40  44
         |   |    |    |    |    |    |    |    |   |
         39999498900002952951122334000001234567815512
         39991498900002952951122334001234567894315512
-        └-┘↓↓└--┘└--------┘└-----┘└-----------┘└--┘↓  
+        └-┘↓↓└--┘└--------┘└-----┘└-----------┘└--┘↓
          | ||  |      |       |         |        | └-- Código do aplicativo (2 fixo)
          | ||  |      |       |         |        └---- Data no formato juliano
          | ||  |      |       |         └------------- Nosso número
@@ -45,8 +45,8 @@ class Hsbc extends Banco{
          | |└----------------------------------------- Dígito verificador do código
          | └------------------------------------------ Código da Moeda
          └-------------------------------------------- Código do banco
-                                                      
-                                                      
+
+
           Array
           (
               [Banco] => 399
@@ -56,7 +56,7 @@ class Hsbc extends Banco{
               [FatorVencimento] => 1001
               [CodigoCedente] => 0351202
               [DataVencimentoCalendarioJuliano] => 0000
-          )                                                        
+          )
     */
     public $tamanhos = array(
         #Campos comuns a todos os bancos
@@ -71,12 +71,12 @@ class Hsbc extends Banco{
         'DataVencimentoCalendarioJuliano' => 4,
         //'CodigoAplicativo'  => 1,
     );
-    
-    
+
+
     /*
         @var $carteiras
         Identifica as carteiras disponíveis para esse banco.
-        
+
         - A primeira carteira sempre é a carteira padrão.
         - Se a carteira for um array, esse array deverá conter as diferenças
         nos tamanhos entre essa carteira e a carteira padrão. Se for uma
@@ -92,7 +92,7 @@ class Hsbc extends Banco{
         'CNR',
         'CNR Fácil' => array('NossoNumero' => 7, 'CodigoCedente' => 13),
     );
-    
+
     /*
         @var string $layoutCodigoBarras
         Armazena o layout que será usado para gerar o código de barras desse banco.
@@ -100,13 +100,13 @@ class Hsbc extends Banco{
         pelos seus respectivos valores
      */
     public $layoutCodigoBarras = ':Banco:Moeda:FatorVencimento:Valor:CodigoCedente:NossoNumero:DataVencimentoCalendarioJuliano2';
-    
+
     /**
       * particularidade() Faz em tempo de execução mudanças que sejam imprescindíveis
       * para a geração correta do código de barras
       * Especificamente para o Hsbc, temos duas particularidas: Data no formato juliano, e
       * um dígito verificador triplo para o nosso número.
-      * 
+      *
       *
       * @version 0.1 28/05/2011 Initial
       */
@@ -118,23 +118,24 @@ class Hsbc extends Banco{
             $object->Data['DataVencimentoCalendarioJuliano'] = $this->julianDays($object->Boleto->Vencimento);
         }
         $object->Data['NossoNumero'] = $this->geraCodigoDocumento($object->Data);
+		$object->Boleto->NossoNumero = Math::Mod11($object->Boleto->NossoNumero, 0, 0, true);
     }
-    
+
     /**
       * HSBC usa um dígito verificador triplo no NossoNumero.
-      * 
+      *
       * @version 0.1 28/05/2011 Inicial
       */
     public function geraCodigoDocumento($dados){
         #dv1 é o Mod11 do NossoNumero
         $dv1 = Math::Mod11($dados['NossoNumero']);
-        
+
         #Concatena o NossoNumero a dv1
         $codigo = (int) $dados['NossoNumero'] . $dv1;
 
         #Calcula a data de vencimento no formato dmy, em barras e com o ano com 2 digitos
         $data = OB::fatorVencimentoParaData($dados['FatorVencimento'], 'dmy');
-        
+
         #Se o identificador for "4", dv3 é o Mod11 da soma do NossoNumero
         #concatenado a dv1 e dv2, a data sem barras e o código do cedente.
         #Se o identificador for "5", dv3 é o modulo 11 da soma donosso
@@ -147,23 +148,23 @@ class Hsbc extends Banco{
             $codigo .= 5;
             $dv3 = Math::Mod11($codigo + $dados['CodigoCedente']);
         }
-        
+
         #Retorno com 13 caracteres
         return OB::zeros($codigo . $dv3, $this->tamanhos['NossoNumero']);
     }
-    
+
     /**
       * Calcula a data juliana para uma data informada no formato d/m/a
       *
       * @version 0.1 28/05/2011 Initial
-      *          0.2 31/05/2011 Formatação geral   
+      *          0.2 31/05/2011 Formatação geral
       */
     public function julianDays($date) {
         $date = preg_split('%[/-]+%', $date);
-    
+
         $dataFinal = mktime(0,0,0,$date[1],$date[0],$date[2]);
         $dataInicial = mktime(0,0,0,12,31,$date[2]-1);
-    
+
         return OB::zeros((int)(($dataFinal - $dataInicial)/(60*60*24)), 3) . String::right($date[2],1);
     }
 

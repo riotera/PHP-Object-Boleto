@@ -10,27 +10,27 @@
     @package ObjectBoleto http://github.com/klawdyo/PHP-Object-Boleto
     @subpackage ObjectBoleto.Lib.Bancos
     @license http://www.opensource.org/licenses/mit-license.php The MIT License
-    
+
 -----------------------
     CHANGELOG
 -----------------------
     17/05/2011
     [+] Inicial
-    
-    
-    
+
+
+
   */
 class Itau extends Banco{
     public $Codigo = '341';
     public $Nome = 'Itau';
     public $Css;
     public $Image = 'itau.png';
-    
+
     /*
         @var array $tamanhos
         Armazena os tamanhos dos campos na geração do código de barras
         e da linha digitável
-        
+
           1   5   10   15   20   25   30   35   40  44
           |   |    |    |    |    |    |    |    |   |
           34196307200000666061750000005160148348516000
@@ -48,8 +48,8 @@ class Itau extends Banco{
            | |└----------------------------------------- Dígito verificador do código
            | └------------------------------------------ Código da Moeda
            └-------------------------------------------- Código do banco
-        
-        
+
+
     */
     public $tamanhos = array(
         #Campos comuns a todos os bancos
@@ -72,16 +72,17 @@ class Itau extends Banco{
         pelos seus respectivos valores
      */
     public $layoutCodigoBarras = ':Banco:Moeda:FatorVencimento:Valor:Carteira:NossoNumero:DigitoAgContaCarteiraNNum:Agencia:Conta:DigitoAgConta000';
-    
-    
+
+
     public function particularidade($object){
         //pr($object->Data);
         $digAgConta = $object->Data['Agencia'] . $object->Data['Conta'];
         $digAgContaCartNNum = $object->Data['Agencia'] . $object->Data['Conta']
                             . $object->Data['Carteira'] . $object->Data['NossoNumero'];
-        
+
         $object->Data['DigitoAgContaCarteiraNNum'] = Math::Mod10($digAgContaCartNNum);
         $object->Data['DigitoAgConta'] = Math::Mod10($digAgConta);
+		$object->Boleto->NossoNumero = Math::Mod11($object->Boleto->NossoNumero, 0, 0, true);
     }
-    
+
 }

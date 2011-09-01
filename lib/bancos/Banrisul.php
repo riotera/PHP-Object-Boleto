@@ -10,29 +10,29 @@
     @package ObjectBoleto http://github.com/klawdyo/PHP-Object-Boleto
     @subpackage ObjectBoleto.Lib.Bancos
     @license http://www.opensource.org/licenses/mit-license.php The MIT License
-    
+
 -----------------------
     CHANGELOG
 -----------------------
     28/05/2011
     [+] Inicial
-    
-    
-    
+
+
+
   */
 class Banrisul extends Banco{
     public $Codigo = '041';
     public $Nome = 'Banrisul';
     //public $Css;
     public $Image = 'banrisul.png';
-    
+
     /*
         @var array $tamanhos
         Armazena os tamanhos dos campos na geração do código de barras
         e da linha digitável
-        
+
         Especificações sobre as posições 20 a 44 do código de barras
-        Posições 20 a 20 Produto: 
+        Posições 20 a 20 Produto:
                         "1" Cobrança Normal, Fichário emitido pelo BANRISUL
                         "2" Cobrança Direta, Fichário emitido pelo CLIENTE.
         Posição 21 a 21 Constante "1"
@@ -41,15 +41,15 @@ class Banrisul extends Banco{
         Posição 32 a 39	Nosso Número sem Número de Controle.
         Posição 40 a 42	Constante "041".
         Posição 43 a 44	Duplo Dígito referente às posições 20 a 42 (módulos 10 e 11).
-        
-        
+
+
           1   5   10   15   20   25   30   35   40  44
           |   |    |    |    |    |    |    |    |   |
           0419 100100000550002110000000012283256304168    //manual
-          04191100100000550002110000000012283256304168    //gerado 
+          04191100100000550002110000000012283256304168    //gerado
               |                |                    \/
               dv                                   dig.duplo
-        
+
     */
     public $tamanhos = array(
         #Campos comuns a todos os bancos
@@ -71,7 +71,7 @@ class Banrisul extends Banco{
         pelos seus respectivos valores
      */
     public $layoutCodigoBarras = ':Banco:Moeda:FatorVencimento:Valor21:Agencia:CodigoCedente:NossoNumero041:DuploDigito';
-    
+
     /**
       * particularidade() Faz em tempo de execução mudanças que sejam imprescindíveis
       * para a geração correta do código de barras
@@ -85,12 +85,13 @@ class Banrisul extends Banco{
         $codigo = String::insert('21:Agencia:CodigoCedente:NossoNumero041', $object->Data);
         $dv1 = Math::Mod10($codigo);
         $dv2 = Math::Mod11($codigo . $dv1);
+		$object->Boleto->NossoNumero = Math::Mod11($object->Boleto->NossoNumero, 0, 0, true);
 
         return $object->Data['DuploDigito'] = self::DuploDigito($codigo);
     }
-    
+
     /*
-    
+
 3.4.1.1 PRIMEIRO DÍGITO – MÓDULO 10
 P1 – Multiplicar Os Dígitos Do Argumento Pelos Pesos 2,1,2,....Da Direita Para Esquerda;
 P2 – Subtrair 9 Do Valor Obtido Em Cada Multiplicação Do P1 Se Superior A 9;
@@ -139,26 +140,26 @@ Argumento 00009194 Duplo Dígito = 38
 Nota: Mesmo Não Constando No Exemplo, O Número Do Título Para O Banco Sempre Deve Ser Composto Por 8 (Oito) Dígitos, Neste Caso Deve Ser Completado Com Zeros A Esquerda.
     */
     public static function DuploDigito($num){
-        #DV1 
+        #DV1
         $dv1 = Math::Mod10($num);
-        
+
         #DV2 - $num concatenado com $dv1, calculado com Mod11 com
         #multiplicador máximo 7
         $dv2 = Math::Mod11($num . $dv1, 10, 0, false, 7);
-        
+
         #Se $dv2 = 10, adiciona 1 a $dv1 e recalcula $dv2
         #concatenando agora o novo $dv1
         if($dv2 == 10){
             $dv1++;
             $dv2 = Math::Mod11($num . $dv1, 10, 0, false, 7);
-            
+
             #Se o novo valor de $dv1 for maior que 9, então
             #$dv1 passará a ser 0
             if($dv1 > 9){
                 $dv1 = 0;
             }
         }
-        
+
         return $dv1 . $dv2;
     }
 }

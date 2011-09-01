@@ -10,22 +10,22 @@
     @package ObjectBoleto http://github.com/klawdyo/PHP-Object-Boleto
     @subpackage ObjectBoleto.Lib.Bancos
     @license http://www.opensource.org/licenses/mit-license.php The MIT License
-    
+
 -----------------------
     CHANGELOG
 -----------------------
     28/05/2011
     [+] Inicial
-    
-    
-    
+
+
+
   */
 class Bancoob extends Banco{
     public $Codigo = '756';
     public $Nome = 'Bancoob';
     //public $Css;
     public $Image = 'bancoob.png';
-    
+
     /*
         @var array $tamanhos
         Armazena os tamanhos dos campos na geração do código de barras
@@ -33,12 +33,12 @@ class Bancoob extends Banco{
 
           1   5   10   15   20   25   30   35   40  44
           |   |    |    |    |    |    |    |    |   |
-          75692100100000550002010001000000111228563001     
+          75692100100000550002010001000000111228563001
           └-┘↓↓└--┘└--------┘↓└--┘└┘└-----┘└┘└----┘└-┘
            | ||  |     |     | |  |    |   |   |    └--- Número da Parcela do boleto
-           | ||  |     |     | |  |    |   |   └-------- Nosso número       
+           | ||  |     |     | |  |    |   |   └-------- Nosso número
            | ||  |     |     | |  |    |   └------------ Ano da emisão
-           | ||  |     |     | |  |    └---------------- Código do Cedente                
+           | ||  |     |     | |  |    └---------------- Código do Cedente
            | ||  |     |     | |  └--------------------- Modalidade de cobrança (01)
            | ||  |     |     | └------------------------ Agência
            | ||  |     |     └-------------------------- Carteira
@@ -47,8 +47,8 @@ class Bancoob extends Banco{
            | |└----------------------------------------- Dígito do código de barras
            | └------------------------------------------ Código da moeda
            └-------------------------------------------- Código do banco
-            
-            
+
+
     */
     public $tamanhos = array(
         #Campos comuns a todos os bancos
@@ -74,7 +74,7 @@ class Bancoob extends Banco{
         pelos seus respectivos valores
      */
     public $layoutCodigoBarras = ':Banco:Moeda:FatorVencimento:Valor:Carteira:Agencia01:CodigoCedente:AnoEmissao:NossoNumero:NumParcela';
-    
+
     /**
       * particularidade() Faz em tempo de execução mudanças que sejam imprescindíveis
       * para a geração correta do código de barras
@@ -87,5 +87,6 @@ class Bancoob extends Banco{
     public function particularidade($object){
         $object->Data['NumParcela'] = OB::zeros($object->Boleto->NumParcela, 3);
         $object->Data['AnoEmissao'] = date('y');
+		$object->Boleto->NossoNumero = Math::Mod11($object->Boleto->NossoNumero, 0, 0, true);
     }
 }

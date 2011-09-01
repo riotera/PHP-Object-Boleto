@@ -10,22 +10,22 @@
     @package ObjectBoleto http://github.com/klawdyo/PHP-Object-Boleto
     @subpackage ObjectBoleto.Lib.Bancos
     @license http://www.opensource.org/licenses/mit-license.php The MIT License
-    
+
 -----------------------
     CHANGELOG
 -----------------------
     17/05/2011
     [+] Inicial
-    
-    
-    
+
+
+
   */
 class Caixa extends Banco{
     public $Codigo = '104';
     public $Nome = 'Caixa';
     public $Css = 'caixa.css';
     public $Image = 'caixa.png';
-    
+
     /*
         @var array $tamanhos
         Armazena os tamanhos dos campos na geração do código de barras
@@ -50,4 +50,17 @@ class Caixa extends Banco{
         pelos seus respectivos valores
      */
     public $layoutCodigoBarras = ':Banco:Moeda:FatorVencimento:Valor1:CodigoCedente9:NossoNumero';
+
+	/**
+      * particularidade() Faz em tempo de execução mudanças que sejam imprescindíveis
+      * para a geração correta do código de barras
+      * Especificamente para o Hsbc, temos duas particularidas: Data no formato juliano, e
+      * um dígito verificador triplo para o nosso número.
+      *
+      *
+      * @version 0.1 28/05/2011 Initial
+      */
+    public function particularidade($object){
+		$object->Boleto->NossoNumero = Math::Mod11($object->Boleto->NossoNumero, 0, 0, true);
+    }
 }
