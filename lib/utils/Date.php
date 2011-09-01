@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 class Date{
     public static $convert = array(
@@ -15,7 +15,7 @@ class Date{
         '02/11', '20/11', '15/11', '25/12'
     );
     public static $format = 'Y-m-d';
-    
+
 
     /**
       * Calcula a diferença entre duas datas
@@ -30,14 +30,11 @@ class Date{
       *     days, months, years, hours, etc.
       */
     public static function diff($date, $otherDate = null, $unit = 'days') {
-        if(is_null($otherDate)):
-            $otherDate = time();
-        else:
-            $otherDate = strtotime($otherDate);
-        endif;
+        $otherDate = (is_null($otherDate)) ? time() : strtotime($otherDate);
+
         $date = strtotime($date);
         $time = abs($date - $otherDate);
-        
+
         return ceil($time / self::$convert[$unit]);
     }
 
@@ -70,11 +67,11 @@ class Date{
             $date = date('Y-m-d');
         endif;
         $date = self::add($date, 1, 'days', 'Y-m-d');
-        
+
         while(!self::isWorkday($date)):
             $date = self::add($date, 1, 'days', 'Y-m-d');
         endwhile;
-        
+
         return self::format($date, $format);
     }
 
@@ -102,12 +99,8 @@ class Date{
       *     informado
       */
     public static function isWeekend($date = null) {
-        if(is_null($date)):
-            $time = time();
-        else:
-            $time = strtotime($date);
-        endif;
-        
+        $time = (is_null($date)) ? time() : strtotime($date);
+
         return date('N', $time) >= 6;
     }
 
@@ -142,7 +135,7 @@ class Date{
         elseif(!is_numeric($date)):
             $date = strtotime($date);
         endif;
-        
+
         return date($format, $date);
     }
 
@@ -154,11 +147,8 @@ class Date{
       * @param $date a data a ser comparada
       */
     public static function timeAgo($date = null) {
-        if(is_null($date)):
-            $date = time();
-        else:
-            $date = strtotime($date);
-        endif;
+        $date = (is_null($date)) ? time() : strtotime($date);
+
         $now = time();
         $since = $now - $date;
 
@@ -179,7 +169,7 @@ class Date{
                 $ago .= ', ' . (($count == 1) ? '1 ' . $name : $count . ' ' . $name . 's');
             endif;
         endif;
-        
+
         return $ago;
     }
 
@@ -216,14 +206,11 @@ class Date{
       * @param $unit A unidade dos períodos adicionados
       */
     protected static function addInTime($date, $num, $unit = 'days') {
-        if(is_null($date)):
-            $date = time();
-        else:
-            $date = strtotime($date);
-        endif;
+        $date = (is_null($date)) ? time() : strtotime($date);
+
         return $date + $num * self::$convert[$unit];
     }
-    
+
     /**
       * @todo
       * Converte entre formatos de data
@@ -235,7 +222,7 @@ class Date{
       * @param
       */
     public static function convertFrom($fromFormat, $date, $toFormat = null){
-        
-        
+
+
     }
 }
