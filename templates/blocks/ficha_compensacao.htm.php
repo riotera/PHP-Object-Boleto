@@ -5,11 +5,11 @@
             <div id="ficha_compensacao">
                 <!--  cabecalho  -->
                 <div class="cabecalho">
-                    <div class="banco_logo "><img src="<?php echo OB::url('/public/images/' . $OB->Banco->Image);?>" /></div>
+                    <div class="banco_logo "><img src="<?php echo ASSETS_ROOT . '/images/' . $OB->Banco->Image;?>" /></div>
                     <div class="banco_codigo "><?php echo Math::Mod11($OB->Banco->Codigo, 0, 0, true)?></div>
                     <div class="linha_digitavel  last"><?php echo $OB->linhaDigitavel();?></div>
                 </div>
-                
+
                 <div id="colunaprincipal" class="">
                     <!--  linha1  -->
                         <!--local de pagamento-->
@@ -17,14 +17,14 @@
                              <label>Local de Pagamento</label>
                              <?php echo $OB->Configuracao->LocalPagamento; ?>
                         </div>
-                    
+
                     <!--  linha2  -->
                         <!--Cedente-->
                         <div class="cedente item">
                              <label>Cedente </label>
                              <?php echo $OB->Vendedor->RazaoSocial; ?>
                         </div>
-                    
+
                     <!--  linha3  -->
                     <div class="linha">
                         <!--data emissao-->
@@ -40,12 +40,12 @@
                         <!--especiedocumento-->
                         <div class="espec_doc item">
                             <label>Espécie Doc.</label>
-            
+
                         </div>
                         <!--aceite-->
                         <div class="aceite item">
                             <label>Aceite</label>
-            
+
                         </div>
                         <!--data processamento-->
                         <div class="dt_proc item">
@@ -53,13 +53,13 @@
                              <?php echo $OB->Boleto->DataEmissao; ?>
                         </div>
                     </div>
-                    
+
                     <!--  linha4  -->
                     <div class="linha">
                         <!--uso do banco-->
                         <div class="uso_banco item">
                             <label>Uso do Banco</label>
-                            
+
                         </div>
                         <!--carteira-->
                         <div class="carteira item">
@@ -82,15 +82,15 @@
                             <?php echo number_format($OB->Boleto->ValorUnitario/100,2,',','.'); ?>
                         </div>
                     </div>
-                    
+
                     <!--  instrucoes/mensagens  -->
                     <div class="mensagens ">
                              <label>Instruções (Texto de responsabilidade do cedente)</label>
                              <?php
-                                
+
                              ?>
                     </div>
-                
+
                 </div>
                 <!--Coluna direita-->
                 <div id="colunadireita" class="">
@@ -145,7 +145,7 @@
                          <label>(=) Valor cobrado</label>
                     </div>
                 </div>
-                
+
                 <!--  sacado  -->
                 <div id="sacado" class="">
                     <div class="">
@@ -160,7 +160,7 @@
                          ?>
                     </div>
                 </div>
-                
+
                 <!--  codigo_barras  -->
                 <div id="codigo_barras" class="">
                     <div>
@@ -174,9 +174,9 @@
                         <label>Autenticação Mecânica</label>
                     </div>
                 </div>
-                
+
                 <!--Linha pontilhada para corte-->
                 <div class="linha_corte"><label>Corte na linha pontilhada</label></div>
-                
-            <!--Encerra ficha de compensação-->    
+
+            <!--Encerra ficha de compensação-->
             </div>

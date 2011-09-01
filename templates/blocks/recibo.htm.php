@@ -1,7 +1,7 @@
 <div id="recibo">
     <!--  cabecalho  -->
     <div class="cabecalho">
-        <div class="banco_logo "><img src="<?php echo OB::url('/public/images/' . $OB->Banco->Image);?>" /></div>
+        <div class="banco_logo "><img src="<?php echo ASSETS_ROOT .'/images/' . $OB->Banco->Image ;?>" /></div>
                     <div class="banco_codigo "><?php echo Math::Mod11($OB->Banco->Codigo, 0, 0, true)?></div>
         <div class="linha_digitavel"><?php echo $OB->linhaDigitavel();?></div>
     </div>
@@ -33,7 +33,7 @@
             <?php echo Math::Mod11($OB->Boleto->NossoNumero,0,0, true);?>
         </div>
     </div>
-    
+
     <!--Linha 2-->
     <div class="linha">
         <!-- Número do Documento -->
@@ -64,7 +64,7 @@
             <?php echo number_format($OB->Boleto->Valor/100, 2, ',', '.');?>
         </div>
     </div>
-    
+
     <!--Linha 3-->
     <div class="linha">
         <!-- Descontos/Abatimentos -->
@@ -88,7 +88,7 @@
             <label>(=) Valor Cobrado</label>
         </div>
     </div>
-    
+
     <!--Linha 4-->
     <div class="linha">
         <!-- Sacado -->
@@ -97,7 +97,7 @@
             <?php echo $OB->Cliente->Nome;?>
         </div>
     </div>
-    
+
     <!--Linha 5-->
     <div class="linha">
         <!-- Demonstrativo -->
@@ -112,7 +112,7 @@
             <label>Autenticação Mecânica</label>
         </div>
     </div>
-    
+
     <!--Linha pontilhada para corte-->
     <div class="linha_corte"><label>Corte na linha pontilhada</label></div>
 </div>
